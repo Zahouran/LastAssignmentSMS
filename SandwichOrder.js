@@ -28,68 +28,33 @@ module.exports = class SandwichOrder extends Order{
         switch(this.stateCur){
             case OrderState.WELCOMING:
                 this.stateCur = OrderState.CHOICE;
-                aReturn.push("Welcome to Pierre's Sandwichery.");
-                aReturn.push("Would you like a premade sandwich or custom?");
-                aReturn.push("Enter premade or custom");
+                aReturn.push("Welcome to Pierre and Konrad's Sandwichery.");
+                aReturn.push("Would you like a premade sandwich?");
+                aReturn.push("Enter Yes");
                 break;
             case OrderState.CHOICE:
-                if(sInput.toLowerCase() == "premade"){
+                if(sInput.toLowerCase() == "yes"){
                     this.stateCur = OrderState.TYPE
                     this.sChoice = sInput;
-                    aReturn.push("What type of bread would you like?");
-                    aReturn.push("Bagel, Baguette, Multigrain, Croissant");
-                }
-                else if(sInput.toLowerCase() == "custom"){
-                    this.stateCur = OrderState.TYPE
-                    this.sChoice = sInput;
-                    aReturn.push("What type of bread would you like?");
-                    aReturn.push("Bagel, Baguette, Multigrain, Croissant");
+                    aReturn.push("What type of sandwich would you like?");
+                    aReturn.push("Egg, Veggie, Ham");
                 }
                 else{
-                  aReturn.push("Would you like a premade sandwich or custom?");
-                  aReturn.push("Enter premade or custom");
+                  aReturn.push("Would you like a premade sandwich?");
+                  aReturn.push("Enter Yes");
                 }
                 break;
             case OrderState.TYPE:
-              if(sInput.toLowerCase() == "bagel" || sInput.toLowerCase() == "baguette" || sInput.toLowerCase() == "multigrain" || sInput.toLowerCase() == "croissant"){
-                if(this.sChoice.toLowerCase() == "premade"){
-                    this.stateCur = OrderState.TOPPINGS
-                    this.sType = sInput;
-                    aReturn.push("What sandwich would you like?");
-                    aReturn.push("Scramble, BBQ, Teriyaki, Veggietable");
-                    this.sTotal += 4;
-                }
-                if(this.sChoice.toLowerCase() == "custom"){
-                    this.stateCur = OrderState.TOPPINGS
-                    this.sType = sInput;
-                    aReturn.push("Pick up to 4 toppings:");
-                    aReturn.push("Tomato, Spinach, Baked Tofu, Avocado, Pickled Onion, Roasted Garlic, Mushroom,");
-                    this.sTotal += 5;
-                }
-              }
-              else{
-                aReturn.push("What type of bread would you like?");
-                aReturn.push("Bagel, Baguette, Multigrain, Croissant");
-              }
-              break;
-            case OrderState.TOPPINGS:
-              if(this.sChoice.toLowerCase() == "premade"){
-                if(sInput.toLowerCase() == "scramble" || sInput.toLowerCase() == "bbq" || sInput.toLowerCase() == "teriyaki" || sInput.toLowerCase() == "veggietable"){
+              if(sInput.toLowerCase() == "egg" || sInput.toLowerCase() == "veggie" || sInput.toLowerCase() == "ham"){
                   this.stateCur = OrderState.SIDES
-                  this.sToppings = sInput;
+                  this.sType = sInput;
                   aReturn.push("Whould you like a side with that? The soup of the day is Cauliflower Curry");
                   aReturn.push("Fries, Onion Rings, Ceasar Salad, Soup, none");
-                }
-                else{
-                  aReturn.push("What sandwich would you like?");
-                  aReturn.push("Scramble, BBQ, Teriyaki, Veggietable");
-                }
+                  this.sTotal += 6;
               }
               else{
-                  this.stateCur = OrderState.SIDES
-                  this.sToppings = sInput;
-                  aReturn.push("Whould you like a side with that? The soup of the day is Cauliflower Curry");
-                  aReturn.push("Fries, Onion Rings, Ceasar Salad, Soup, none");
+                aReturn.push("What type of sandwich would you like?");
+                aReturn.push("Egg, Veggie, Ham");
               }
               break;
             case OrderState.SIDES:  
@@ -116,11 +81,8 @@ module.exports = class SandwichOrder extends Order{
                 this.sDrinks = sInput;
                 this.sTotal += 2;
                 aReturn.push("Thank-you for your order of");
-                if(this.sChoice.toLowerCase() == "premade"){
-                    aReturn.push(`The ${this.sToppings} ${this.sItem} in ${this.sType}`);
-                }
-                if(this.sChoice.toLowerCase() == "custom"){
-                    aReturn.push(`${this.sType} ${this.sItem} with ${this.sToppings}`);
+                if(this.sChoice.toLowerCase() == "yes"){
+                  aReturn.push(`The ${this.sType} ${this.sItem}`);
                 }
                 if(this.sSides){
                   aReturn.push(`with ${this.sSides}`);
@@ -135,8 +97,8 @@ module.exports = class SandwichOrder extends Order{
               else if(sInput.toLowerCase() == "none"){
                 this.stateCur = OrderState.PAYMENT;
                 aReturn.push("Thank-you for your order of");
-                if(this.sChoice.toLowerCase() == "premade"){
-                    aReturn.push(`The ${this.sToppings} ${this.sItem} in ${this.sType}`);
+                if(this.sChoice.toLowerCase() == "yes"){
+                  aReturn.push(`The ${this.sType} ${this.sItem}`);
                 }
                 if(this.sChoice.toLowerCase() == "custom"){
                     aReturn.push(`${this.sType} ${this.sItem} with ${this.sToppings}`);
