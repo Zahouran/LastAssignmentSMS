@@ -55,6 +55,39 @@ app.get("/payment/:phone", (req, res) => {
   }
 });
 
+app.post("/payment", (req, res) => {
+  // this happens when the order is complete
+  sFrom = req.params.phone;
+  const aReply = oOrders[sFrom].handleInput(req.body);
+  const oSocket = oSockets[sFrom];
+  // send messages out of turn
+  for (let n = 0; n < aReply.length; n++) {
+    if (oSocket) {
+      const data = {
+        message: aReply[n]
+      };
+      oSocket.emit('receive message', data);
+    } else {
+      throw new Exception("twilio code would go here");
+    }
+  }
+  if (oOrders[sFrom].isDone()) {
+    delete oOrders[sFrom];
+    delete oSockets[sFrom];
+  }
+  res.end("ok");
+});
+
+app.get("/payment", (req, res) => {
+  // this happens when the user clicks on the link in SMS
+  const sFrom = req.params.phone;
+  if (!oOrders.hasOwnProperty(sFrom)) {
+    res.end("order already complete");
+  } else {
+    res.end(oOrders[sFrom].renderForm());
+  }
+});
+
 app.post("/sms", (req, res) => {
   // turn taking SMS
   let sFrom = req.body.From || req.body.from;
